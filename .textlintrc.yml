@@ -1,0 +1,27 @@
+---
+plugins:
+  mdx: true
+filters:
+  comments: true
+  allowlist:
+    allow:
+      - '-github'
+rules:
+  preset-smarthr:
+    ja-no-mixed-period: false
+    prh-rules: false
+    sentence-length: false
+  preset-ja-spacing:
+    ja-space-between-half-and-full-width: false
+  preset-ja-technical-writing:
+    sentence-length: false
+    ja-no-mixed-period: false
+    max-kanji-continuous-len: false
+    no-exclamation-question-mark: false
+    max-comma: false
+    ja-no-successive-word: false
+    ja-no-weak-phrase: false
+  spellcheck-tech-word: false
+  prh:
+    rulePaths:
+      - ./rules.yml
