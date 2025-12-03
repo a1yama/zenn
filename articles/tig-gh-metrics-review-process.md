@@ -155,9 +155,9 @@ PRの品質に関する問題を自動検出します。
 
 ## 設定方法
 
-メトリクス機能を使用するには、設定ファイルで対象リポジトリと計測期間を指定します。
+メトリクス機能を使用するには、`~/.config/tig-gh/config.yaml` に対象リポジトリと計測期間を指定します。
 
-```yaml:config.yaml
+```yaml:~/.config/tig-gh/config.yaml
 github:
   token: ghp_xxxxxxxxxxxx
   repositories:
