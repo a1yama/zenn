@@ -148,21 +148,22 @@ google/guava                    #4034   no_description   0 lines, 0 files google
 
 PRの品質に関する問題を自動検出します。
 
-#### 検出項目
+#### 検出項目（Type）
 
-- **大規模PR**: 変更行数が多すぎるPR
-- **説明不足**: 本文が短すぎるPR
-- **レビュアー不足**: レビュアーがアサインされていないPR
-- **テンプレート違反**: PRテンプレートに従っていないPR
+- **no_description**: PR本文が空のPR
+- **short_description**: PR本文が50文字未満のPR
+- **large_pr**: 変更行数が500行以上のPR
+- **many_commits**: コミット数が15以上のPR
+- **large_single_commit**: コミット数が1つで変更行数が500行以上のPR
 
 #### 活用方法
 
 品質問題のあるPRを早期に発見して、改善を促します。
 
 **例**:
-- 大規模PRは分割を推奨
-- 説明不足のPRには背景や影響範囲の追記を依頼
-- レビュアー不足のPRには適切なレビュアーをアサイン
+- `no_description` / `short_description` → 背景や影響範囲の追記を依頼
+- `large_pr` → PRの分割を推奨
+- `many_commits` → squashで整理を推奨
 
 ### 5. Stagnant PRs
 
