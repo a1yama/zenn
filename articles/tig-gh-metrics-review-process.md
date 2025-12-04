@@ -19,7 +19,7 @@ KyashでBackend Engineering Managerをしている[a1yama](https://x.com/xxx_a1_
 
 チーム開発をしていく上で、PRの書きぶりが人によって違っていたり、PRが長時間放置されたりと、レビュープロセスやリリース頻度に課題を感じることがありました。
 
-GitHubの内容をターミナルで気軽に見れるツールの作成をしていたのですが、上記の課題の解決をしたく、メトリクス機能を追加しました。本記事では、メトリクス機能でレビュープロセスを可視化し、開発フローを改善する方法を紹介します。
+もともと個人でGitHubの内容をターミナルで気軽に見れる tig-gh というツールの作成をしていたのですが、上記の課題の解決をしたく、メトリクス機能を追加しました。本記事では、メトリクス機能でレビュープロセスを可視化し、開発フローを改善する方法を紹介します。
 
 ## tig-gh
 
@@ -32,13 +32,69 @@ https://github.com/a1yama/tig-gh
 - **tigライクな操作感**: `j`/`k`でリスト移動、`Enter`で詳細表示など、tigユーザーに馴染みのあるキーバインディング
 - **複数ビュー対応**: Issues、Pull Requests、Commits、Search、Review Queue、Metricsの各ビュー
 - **高速なキャッシュ機構**: GitHub API呼び出し結果のメモリ＋ファイルキャッシュ
-- **メトリクス機能**: 複数リポジトリのレビュープロセス分析
+- **(New!!) メトリクス機能**: 複数リポジトリのレビュープロセス分析
 
 本記事では、特に**メトリクス機能**にフォーカスします。
 
 ## メトリクス機能の詳細
 
-メトリクスビューは、複数リポジトリのレビュープロセスを多角的に分析し、チームのパフォーマンス改善を支援します。
+メトリクスビューでは、複数リポジトリのレビュープロセスを多角的に分析できます。
+
+以下は実際の表示例です（googleのOSSリポジトリを対象にした例）。
+
+```
+ Lead Time Metrics
+Period: 2025-11-20 ~ 2025-12-04 (14 days)
+Last updated: 2025-12-04 10:28:13
+
+ Overall Lead Time
+Average: 2d 16h 28m  Median: 1d 5h 20m  PRs: 42
+
+ Review Phase Breakdown
+  PR Created → First Review:     avg 19h 18m (8 PRs)
+  First Review → Approval:       avg 2d 10m (8 PRs) ← ボトルネック
+  Approval → Merge:              avg 1d 3h 42m (8 PRs)
+  ─────────────────────────────────────────────
+  Total Lead Time:               avg 3d 23h 11m
+
+ Activity by Day of Week
+         Mon  Tue  Wed  Thu  Fri  Sat  Sun
+Merges     5   8  21   6   2   0   0
+Reviews    5   0   1   1   0   0   1
+
+ Weekly Review Activity (This Week vs Last Week)
+Period                       Reviews     Merges
+This Week (last 7 days)            3         19
+Last Week (8-14 days ago)          3         23
+Change                         +0.0%     -17.4%
+
+ PR Quality Issues (5 issues)
+High Priority:
+Repo                            #       Type             Details          Title
+google/closure-templates        #205    no_description   0 lines, 0 files Fix "type expression reference" link URL
+google/closure-templates        #206    no_description   0 lines, 0 files fix link url to plugins.md
+google/closure-templates        #217    no_description   0 lines, 0 files Fixing invalid links
+google/guava                    #3617   no_description   0 lines, 0 files fix duplicate words typos in comments
+google/guava                    #4034   no_description   0 lines, 0 files google#1409 Add poll() and offer()
+
+ Stagnant PRs (Open > 3d)
+Total stagnant PRs:  235
+Longest waiting PRs:
+   1. google/guava #2100 (3801d): UnsignedShort patch as pull request
+   2. google/guava #2148 (3744d): byte array searches with start and end limits
+   3. google/guava #2180 (3709d): Add tryParse methods to UnsignedBytes...
+   4. google/guava #2210 (3690d): Add Futures.getUnchecked with timeout
+   5. google/guava #2242 (3654d): preserve the laziness of incoming iterators
+
+ Per Repository
+Repository                                        Avg       Median    PRs
+google/closure-templates                   1d 16h 54m      11h 56m      6
+google/go-github                           3d 23h 11m   1d 13h 36m      8
+google/guava                                      44m          27m      4
+google/meridian                            2d 22h 45m   1d 13h 56m     24
+```
+
+各セクションについて説明します。
 
 ### 1. Review Phase Breakdown（レビューフェーズ分解）
 
@@ -179,7 +235,7 @@ metrics:
 
 ## まとめ
 
-tig-ghのメトリクス機能を活用することで、以下のような効果が期待できます。
+tig-ghのメトリクス機能を活用することで、以下のような改善に繋げられます。
 
 1. **レビュープロセスの可視化**: どこがボトルネックかを定量的に把握
 2. **滞留PRの早期発見**: 放置されているPRを定期的に確認
@@ -187,11 +243,9 @@ tig-ghのメトリクス機能を活用することで、以下のような効�
 4. **曜日パターンの把握**: デプロイ戦略やレビュー体制の最適化
 5. **継続的な改善**: 週次比較で改善トレンドを追跡
 
-メトリクスは「測定すること」が目的ではなく、「改善すること」が目的です。tig-ghのメトリクス機能を使って、チームのレビュープロセスを継続的に改善していきましょう。
+メトリクスは「測定すること」が目的ではなく、「改善すること」が目的です。tig-ghのメトリクス機能を使って、チームのレビュープロセスを継続的に改善できます。
 
-## おわりに
-
-ターミナルからサクサクとGitHubを操作しながら、チームのメトリクスを確認できるtig-ghを、ぜひお試しください。
+ターミナルからサクサクとGitHubを操作しながら、チームのメトリクスを確認できます。
 
 個人開発でありながらKyashのバックエンドに合わせた要件定義にしているため、万人向けを想定してはいません。チームメンバーからは「計測ブランチを絞りたい」「もっと気軽に見れるようにしたい」といった意見をもらっており、改善を進めています。今後はメトリクスの定期Slack通知なども検討中です。
 
