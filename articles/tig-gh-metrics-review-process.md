@@ -8,14 +8,17 @@ topics:
   - 'レビュー'
   - 'メトリクス'
   - 'Go'
-published: false
+published: true
 publication_name: 'kyash'
 ---
 
-KyashでBackend Engineering Managerをしている[a1yama](https://x.com/xxx_a1_xxx)です。
 この記事は [Kyash Advent Calendar 2025](https://adventar.org/calendars/11602) の5日目の記事です。
 
+昨日はtamadonさんの [モバイルエンジニアのAI活用事例紹介](https://tamadon.hatenablog.jp/entry/mobile-ai-use-cases) でした
+
 ## はじめに
+
+KyashでBackend Engineering Managerをしている[a1yama](https://x.com/xxx_a1_xxx)です。
 
 チーム開発をしていく上で、PRの書きぶりが人によって違っていたり、PRが長時間放置されたりと、レビュープロセスやリリース頻度に課題を感じることがありました。
 
@@ -38,7 +41,7 @@ https://github.com/a1yama/tig-gh
 
 ## メトリクス機能の詳細
 
-メトリクスビューでは、複数リポジトリのレビュープロセスを多角的に分析できます。以下は実際の表示例です（googleのOSSリポジトリを対象にした例）。
+メトリクスビューでは、複数リポジトリのレビュープロセスを多角的に分析できます。以下は実際の表示例です（GoogleのOSSリポジトリを対象にした例）。
 
 ### 1. Overall Lead Time / Review Phase Breakdown
 
@@ -261,3 +264,9 @@ tig-ghのメトリクス機能を活用することで、以下のような改�
 https://github.com/a1yama/tig-gh
 
 それでは、良いレビューライフを！
+
+## 仲間を募集しています！
+
+Kyashではサーバーサイド と SREのポジションを募集しています。 興味のある方は [X のDM](https://x.com/xxx_a1_xxx) か [YOUTRUST](https://youtrust.jp/companies/4b6259025aa80c3003a043e4e34d85f6) から気軽にご連絡ください！
+
+Kyash 求人一覧 : https://herp.careers/v1/kyash
