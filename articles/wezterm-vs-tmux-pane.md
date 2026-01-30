@@ -1,5 +1,5 @@
 ---
-title: 'WezTermのpane操作で十分？tmuxとの比較から考える選択基準'
+title: 'WezTermのpane機能で満足していたけど、結局tmuxに移行した話'
 emoji: '🖥️'
 type: 'tech'
 topics:
@@ -12,35 +12,42 @@ published: false
 
 ## はじめに
 
-ターミナルを分割して作業したいとき、いくつかの選択肢があります。ターミナルエミュレータ自体の機能を使う方法（WezTerm、iTerm2、Kittyなど）や、tmux・Zellij・screenといったターミナルマルチプレクサを使う方法などがあります。
+ターミナルを分割して作業したいとき、いくつかの選択肢があります。ターミナルエミュレータ自体の機能を使う方法（WezTerm、iTerm2、Kittyなど）や、tmux・Zellij・screenといったターミナルマルチプレクサを使う方法などです。
 
-私は普段WezTermを使っていて、paneとタブの操作で大体のことは事足りています。一方でtmuxはより多機能ですが、その分覚えることも多くなります。
+私は普段WezTermを使っていて、paneとタブの操作で十分事足りていました。tmuxは多機能だけど覚えることが多そうだし、WezTermで困っていないならわざわざ使わなくてもいいかな、と思っていました。
 
-この記事では、WezTermとtmuxのpane操作を比較し、それぞれの特徴と選び方について整理します。
+ただ、ふと考えました。**WezTermをやめたらどうなる？**
 
-## WezTermのpane操作
+WezTermのpane操作に慣れてしまうと、別のターミナルエミュレータに移行したときに同じ操作ができません。一方、tmuxを使っていれば、どのターミナルエミュレータでも同じ操作感で作業できます。
+
+この記事では、WezTermとtmuxそれぞれのpane操作を紹介し、最終的にtmuxに移行して工夫している点をまとめます。
+
+## WezTermのpane/タブ操作
+
+WezTermはデフォルトで直感的なキーバインドが設定されています。
 
 ### pane操作
 
-| 操作 | キーバインド |
-|------|-------------|
-| 縦に分割 | `Cmd + d` (macOS) / `Ctrl + Shift + d` |
-| 横に分割 | `Cmd + Shift + d` (macOS) / `Ctrl + Shift + Alt + d` |
-| pane間の移動 | `Ctrl + Shift + Arrow` |
-| paneを閉じる | `Cmd + w` / `exit` |
-| paneのサイズ変更 | `Ctrl + Shift + Arrow` (設定による) |
+| 操作 | macOS | Windows/Linux |
+|------|-------|---------------|
+| 右に分割 | `Cmd + Shift + Alt + %` | `Ctrl + Shift + Alt + %` |
+| 下に分割 | `Cmd + Shift + Alt + "` | `Ctrl + Shift + Alt + "` |
+| pane間の移動 | `Ctrl + Shift + Arrow` | `Ctrl + Shift + Arrow` |
+| paneを閉じる | `Cmd + w` | `Ctrl + Shift + w` |
 
 ### タブ操作
 
-| 操作 | キーバインド |
-|------|-------------|
-| 新しいタブ | `Cmd + t` (macOS) / `Ctrl + Shift + t` |
-| タブを閉じる | `Cmd + w` |
-| 次のタブ | `Ctrl + Tab` / `Cmd + Shift + ]` |
-| 前のタブ | `Ctrl + Shift + Tab` / `Cmd + Shift + [` |
-| タブ番号で移動 | `Cmd + 数字` |
+| 操作 | macOS | Windows/Linux |
+|------|-------|---------------|
+| 新しいタブ | `Cmd + t` | `Ctrl + Shift + t` |
+| タブを閉じる | `Cmd + w` | `Ctrl + Shift + w` |
+| 次のタブ | `Ctrl + Tab` | `Ctrl + Tab` |
+| 前のタブ | `Ctrl + Shift + Tab` | `Ctrl + Shift + Tab` |
+| タブ番号で移動 | `Cmd + 数字` | `Alt + 数字` |
 
-## tmuxのpane操作
+macOSであれば`Cmd + t`でタブ作成、`Cmd + w`で閉じるなど、一般的なアプリケーションと同じ操作感で使えます。
+
+## tmuxのpane/ウィンドウ操作
 
 tmuxでは、操作の前にプレフィックスキー（デフォルトは `Ctrl + b`）を押す必要があります。
 
@@ -48,91 +55,142 @@ tmuxでは、操作の前にプレフィックスキー（デフォルトは `Ct
 
 | 操作 | キーバインド |
 |------|-------------|
-| 縦に分割 | `Prefix + %` |
-| 横に分割 | `Prefix + "` |
-| pane間の移動 | `Prefix + Arrow` / `Prefix + o` |
-| paneを閉じる | `Prefix + x` / `exit` |
-| paneのサイズ変更 | `Prefix + Ctrl + Arrow` |
-| paneの入れ替え | `Prefix + {` / `Prefix + }` |
-| paneのレイアウト変更 | `Prefix + Space` |
-| paneをウィンドウに昇格 | `Prefix + !` |
-| paneの最大化/復元 | `Prefix + z` |
+| 左右に分割 | `Prefix` → `%` |
+| 上下に分割 | `Prefix` → `"` |
+| pane間の移動 | `Prefix` → `Arrow` |
+| paneを閉じる | `Prefix` → `x` |
+| paneのサイズ変更 | `Prefix` → `Ctrl + Arrow` |
+| paneの入れ替え | `Prefix` → `{` / `}` |
+| paneの最大化/復元 | `Prefix` → `z` |
 
 ### ウィンドウ（タブ相当）操作
 
 | 操作 | キーバインド |
 |------|-------------|
-| 新しいウィンドウ | `Prefix + c` |
-| ウィンドウを閉じる | `Prefix + &` |
-| 次のウィンドウ | `Prefix + n` |
-| 前のウィンドウ | `Prefix + p` |
-| ウィンドウ番号で移動 | `Prefix + 数字` |
-| ウィンドウ一覧 | `Prefix + w` |
+| 新しいウィンドウ | `Prefix` → `c` |
+| ウィンドウを閉じる | `Prefix` → `&` |
+| 次のウィンドウ | `Prefix` → `n` |
+| 前のウィンドウ | `Prefix` → `p` |
+| ウィンドウ番号で移動 | `Prefix` → `数字` |
+| ウィンドウ一覧 | `Prefix` → `w` |
 
-### セッション操作（tmux固有）
+### セッション操作
 
 | 操作 | キーバインド |
 |------|-------------|
-| セッションをデタッチ | `Prefix + d` |
-| セッション一覧 | `Prefix + s` |
+| セッションをデタッチ | `Prefix` → `d` |
+| セッション一覧 | `Prefix` → `s` |
 | セッションにアタッチ | `tmux attach -t <name>` |
 | 新しいセッション | `tmux new -s <name>` |
 
-## 比較
+## tmuxのデメリット：キーストロークの多さ
 
-### WezTermが優れている点
+tmuxの最大のデメリットは**キーストローク数の多さ**です。
 
-- **直感的なキーバインド**: macOSならCmd、Windowsならスタンダードなショートカットで操作できる
-- **設定不要で使える**: インストール直後から快適に使える
-- **GUIとの親和性**: タブバーの視認性、マウス操作との相性が良い
-- **モダンな機能**: GPU描画、ligature対応、Luaでの柔軟な設定
+例えば、新しいタブ（ウィンドウ）を作る操作を比較してみます。
 
-### tmuxが優れている点
+| ツール | 操作 | キーストローク数 |
+|--------|------|-----------------|
+| WezTerm (macOS) | `Cmd + t` | 2キー同時押し |
+| tmux | `Ctrl + b` → `c` | 3キー + 1キー = 4回 |
 
+paneを分割する場合も同様です。
+
+| ツール | 操作 | キーストローク数 |
+|--------|------|-----------------|
+| WezTerm (macOS) | `Cmd + Shift + Alt + %` | 4キー同時押し |
+| tmux | `Ctrl + b` → `%` | 3キー + 2キー = 5回 |
+
+tmuxは「Prefix → コマンド」という2ステップが必要なので、どうしても操作が煩雑になります。WezTermの「同時押し一発」と比べると、この差は無視できません。
+
+## それでもtmuxを選んだ理由
+
+デメリットを理解した上で、それでもtmuxを選びました。理由は**汎用性**です。
+
+- **ターミナル非依存**: WezTermをやめてAlacrittyやKittyに移行しても、同じ操作感
+- **サーバー作業**: リモートサーバーでもローカルと同じワークフロー
 - **セッション管理**: SSH接続が切れても作業が保持される
-- **どこでも使える**: サーバーにSSHしてtmuxを起動すれば同じ操作感
-- **細かいカスタマイズ**: paneレイアウト、コピーモードなど豊富な機能
-- **スクリプトとの連携**: tmuxコマンドで自動化しやすい
-- **チーム共有**: セッションを複数人で共有できる（ペアプログラミング等）
 
-### 比較表
+特に「ターミナルエミュレータに依存しない」という点が大きい。ツールは乗り換えることがありますが、tmuxの操作を覚えておけば、どの環境でも同じように作業できます。
 
-| 観点 | WezTerm | tmux |
-|------|---------|------|
-| 学習コスト | 低い | やや高い |
-| 基本的なpane操作 | ◎ | ○ |
-| セッション永続化 | × | ◎ |
-| リモートサーバーでの利用 | × | ◎ |
-| キーバインドの覚えやすさ | 覚えやすい | Prefix + キー |
-| pane操作の多機能さ | ○ | ◎ |
+## 私のtmux設定：デメリットを工夫で解消
 
-## どちらを選ぶべきか
+tmuxのキーストローク問題は、設定で大幅に改善できます。
 
-### WezTermだけで十分なケース
+### Prefixキーの変更
 
-- ローカル開発がメイン
-- pane分割とタブ切り替えができれば十分
-- シンプルな操作を好む
-- macOS/Windowsのショートカットに慣れている
+デフォルトの`Ctrl + b`は押しにくいので、`Ctrl + q`に変更しています。
 
-### tmuxを使うべきケース
+```bash
+unbind C-b
+set -g prefix C-q
+bind C-q send-prefix
+```
 
-- リモートサーバーで長時間作業する
-- SSH接続が不安定な環境で作業する
-- 複雑なレイアウトを頻繁に使う
-- ターミナルエミュレータに依存したくない
+### Vim風のキーバインド
+
+pane分割と移動をVim風に設定することで、直感的に操作できるようにしています。
+
+```bash
+# pane分割: s で水平、v で垂直
+bind s split-window -v
+bind v split-window -h
+
+# pane移動: h/j/k/l
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+
+# paneリサイズ: H/J/K/L（リピート可能）
+bind -r H resize-pane -L 5
+bind -r J resize-pane -D 5
+bind -r K resize-pane -U 5
+bind -r L resize-pane -R 5
+```
+
+これで `Prefix` → `v` でpaneを縦分割、`Prefix` → `h/j/k/l` で移動できます。
+
+### fzfとの連携
+
+セッションやウィンドウの切り替えを、fzfでインタラクティブに行えるようにしています。
+
+```bash
+# Prefix + / でセッション一覧をfzfで選択
+bind / display-popup -E "tmux list-sessions -F '#{session_name}' | fzf --reverse | xargs tmux switch-client -t"
+
+# Prefix + w でウィンドウ一覧をfzfで選択
+bind w display-popup -E "tmux list-windows -a -F '#{session_name}:#{window_index} #{window_name}' | fzf --reverse | cut -d' ' -f1 | xargs tmux switch-client -t"
+
+# Prefix + e で新しいセッション作成
+bind e command-prompt -p "new session:" "new-session -s '%%'"
+```
+
+セッションやウィンドウが増えてきても、fzfで素早く目的の場所に移動できます。
+
+### その他の便利設定
+
+```bash
+# マウス操作を有効化
+set -g mouse on
+
+# ウィンドウ番号を1から開始（0始まりより直感的）
+set -g base-index 1
+setw -g pane-base-index 1
+
+# Escapeキーの遅延をなくす
+set -s escape-time 0
+```
 
 ## まとめ
 
-日常的なローカル開発では、WezTermのpane機能で十分に事足ります。操作も直感的で、覚えることも少ない。
+WezTermのpane機能は十分便利で、正直なところtmuxがなくても困りません。操作も直感的で、覚えることも少ない。
 
-ただ、tmuxの操作を覚えておくと、以下のメリットがあります：
+ただ、ターミナルエミュレータに依存した操作を覚えてしまうと、ツールを乗り換えたときに困ります。tmuxを使っていれば、どの環境でも同じワークフローを維持できます。
 
-- **ターミナル非依存**: WezTermをやめて別のターミナルに移行しても同じ操作感
-- **サーバー作業**: リモートサーバーでもローカルと同じワークフロー
-- **セッション管理**: 作業状態を保持したまま別のことができる
+tmuxのキーストロークの多さは確かにデメリットですが、設定次第で十分に改善できます。Vim風のキーバインドやfzf連携を入れることで、WezTermと遜色ない操作感を実現できました。
 
-「WezTermで満足しているけど、tmuxも少しずつ覚えておく」というスタンスが、長い目で見るとよい選択かもしれません。
+「今のツールで満足しているけど、将来のことも考えたい」という方は、tmuxを試してみる価値はあると思います。
 
 ## 参考
 
