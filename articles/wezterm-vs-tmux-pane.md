@@ -7,7 +7,7 @@ topics:
   - 'tmux'
   - 'ターミナル'
   - 'CLI'
-published: false
+published: true
 ---
 
 ## はじめに
