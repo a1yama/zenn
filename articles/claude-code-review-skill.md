@@ -41,7 +41,7 @@ agent: Explore # 使用するエージェントタイプ
     └── rust.md
 ```
 
-### SKILL.MDの設計ポイント
+### SKILL.mdの設計ポイント
 
 - **`context: fork`**: 実装中のコンテキストに引きずられず、独立した視点でレビューする
 - **`agent: Explore`**: 読み取り専用のエージェントを使い、レビュー中にファイルを変更しない
@@ -71,14 +71,14 @@ claude-tmuxと組み合わせると、実装完了後に自動でレビューが
 
 https://zenn.dev/because02/articles/claude-tmux-parallel-agents
 
-claude-tmuxの`spawn`コマンドは、実装エージェント完了後にSKILL.MDを読み込み、2つ目の`claude -p`でレビューします。
+claude-tmuxの`spawn`コマンドは、実装エージェント完了後にSKILL.mdを読み込み、2つ目の`claude -p`でレビューします。
 
 ```text
 claude-tmux spawn "タスク"
   │
   ├── claude -p --allowedTools "Edit Write"  ← 実装
   ├── git diff → レビュープロンプト生成
-  └── claude -p --allowedTools "Read"        ← レビュー（SKILL.MD使用）
+  └── claude -p --allowedTools "Read"        ← レビュー（SKILL.md使用）
 ```
 
 実装エージェントにはEdit/Writeを許可し、レビューエージェントにはReadのみ許可しています。レビュー結果はログに出力されるだけで、ファイルを変更しません。
@@ -94,7 +94,7 @@ claude-tmux spawn "タスク"
 
 ### /update-review-checklistスキルとの連携
 
-レビューで見逃したミスや新たに気づいた落とし穴は、`/update-review-checklist`スキルでチェックリストに追加できます。SKILL.MDの末尾にもこの導線を記載しています。
+レビューで見逃したミスや新たに気づいた落とし穴は、`/update-review-checklist`スキルでチェックリストに追加できます。SKILL.mdの末尾にもこの導線を記載しています。
 
 ```markdown
 **レビュー後のフィードバック:** このレビューで見逃したミスや新たに気づいた落とし穴があれば、/update-review-checklist スキルでチェックリストに追加してください。
@@ -108,7 +108,7 @@ claude-tmux spawn "タスク"
 
 ## セットアップ
 
-SKILL.MDと言語チェックリストを`~/.claude/skills/code-review/`に配置すれば動きます。実際のファイルはdotfilesリポジトリで公開しています。
+SKILL.mdと言語チェックリストを`~/.claude/skills/code-review/`に配置すれば動きます。実際のファイルはdotfilesリポジトリで公開しています。
 
 https://github.com/a1yama/dotfiles/tree/master/packages/claude/.claude/skills/code-review
 
