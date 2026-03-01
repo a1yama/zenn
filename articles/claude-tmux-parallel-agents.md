@@ -199,25 +199,32 @@ claude -p --allowedTools "Edit Write Bash(npm:*) Bash(go:*)" "タスクの説明
 
 ## 自動コードレビュー
 
-claude-tmuxは実装完了後に自動でコードレビューします。実装エージェントとは別の`claude -p`プロセスがレビューを担当するため、独立した視点でチェックが走ります。
+claude-tmuxは実装完了後にClaude Codeの`/code-review`スキル（`~/.claude/skills/code-review/SKILL.md`）を使って自動でコードレビューします。実装エージェントとは別の`claude -p`プロセスがレビューを担当するため、独立した視点でチェックが走ります。
 
 ### フロー
 
 1. 実装エージェントが`claude -p --allowedTools "Edit Write"`でタスクを完了
 2. `git status --short`で変更の有無を確認
-3. 変更がある場合、`git diff`の出力とレビュープロンプトを組み合わせて2つ目の`claude -p`に渡す
-4. レビュー結果がログに出力される
+3. `~/.claude/skills/code-review/SKILL.md`からレビュープロンプトを読み込む
+4. `git diff`の出力と組み合わせて2つ目の`claude -p --allowedTools "Read"`に渡す
+5. レビュー結果がログに出力される
 
-レビューエージェントにはEdit/Writeを許可していません。レビュー結果の出力のみ行い、ファイルを変更しません。
+レビューエージェントにはReadのみ許可しています。言語固有のチェックリスト（`languages/*.md`）を参照できますが、ファイルの変更はしません。
 
-### レビュー観点
+### レビュー観点（SKILL.MDで定義）
+
+SKILL.MDに定義されたレビュー観点が使用されます。
 
 - バグ・ロジックエラー — 意図しない動作、エッジケースの見落とし
 - セキュリティ — インジェクション、ハードコードされた秘密情報
 - 可読性・保守性 — 不明瞭な命名、不必要な複雑さ
 - 一貫性 — 既存コードベースのスタイルとの整合性
 
-レビュー結果は`[重要度: high/medium/low] ファイルパス:行番号`の形式でログに出力されます。問題がなければ「問題なし」と報告されます。
+言語固有のチェックポイント（Go、TypeScript、PHP、Python、Rust）も`languages/`ディレクトリにあれば参照されます。レビュー結果は`[重要度: high/medium/low] ファイルパス:行番号`の形式でログに出力されます。問題がなければ「問題なし」と報告されます。
+
+### スキルのカスタマイズ
+
+レビュー観点を変更したい場合は`~/.claude/skills/code-review/SKILL.md`を編集してください。claude-tmux自体の修正は不要です。
 
 ### レビューのスキップ
 
@@ -227,9 +234,7 @@ READMEの更新や調査タスクなど、レビューが不要な場合は`--no
 claude-tmux spawn "READMEを更新" --name docs --no-review
 ```
 
-:::message alert
-実装エージェントはEdit/Writeが承認なしで許可されています。レビューエージェントは読み取り専用です。レビュー結果に問題が報告された場合、修正は手動で行うか、新たにspawnしてください。
-:::
+:::message alert実装エージェントはEdit/Writeが承認なしで許可されています。レビューエージェントは読み取り専用です。レビュー結果に問題が報告された場合、修正は手動で行うか、新たにspawnしてください。:::
 
 ## 実践ワークフロー
 
@@ -308,6 +313,7 @@ set -euo pipefail
 
 AGENT_PREFIX="🤖"
 LOG_DIR="/tmp/claude-agents"
+SKILL_DIR="$HOME/.claude/skills/code-review"
 
 usage() {
   cat <<'EOF'
@@ -421,20 +427,22 @@ if [[ "${no_review}" != "true" ]]; then
   if [[ -n "\${changes}" ]]; then
     echo "=== コードレビュー開始 ===" | tee -a "\${log_file}"
     review_file="${LOG_DIR}/\${name}.review-prompt"
-    cat > "\${review_file}" <<'REVIEW_EOF'
+
+    # code-review スキル（~/.claude/skills/code-review/SKILL.md）を使用
+    if [[ -f "${SKILL_DIR}/SKILL.md" ]]; then
+      awk 'BEGIN{f=0} /^---$/{f++; next} f>=2' "${SKILL_DIR}/SKILL.md" > "\${review_file}"
+      echo "" >> "\${review_file}"
+      echo "言語固有のチェックポイントは ${SKILL_DIR}/languages/ にあります。" >> "\${review_file}"
+    else
+      echo "code-review スキルが見つかりません。基本レビューで実行します。" | tee -a "\${log_file}"
+      cat > "\${review_file}" <<'REVIEW_EOF'
 以下のコード変更をレビューしてください。
-
-## レビュー観点
-1. バグ・ロジックエラー — 意図しない動作、エッジケースの見落とし
-2. セキュリティ — インジェクション、ハードコードされた秘密情報
-3. 可読性・保守性 — 不明瞭な命名、不必要な複雑さ
-4. 一貫性 — 既存コードベースのスタイルとの整合性
-
 問題がある場合のみ報告。問題がなければ「問題なし」と報告。
-各指摘は以下の形式で簡潔に:
-[重要度: high/medium/low] ファイルパス:行番号
+各指摘: [重要度: high/medium/low] ファイルパス:行番号
 内容: 問題の説明 / 提案: 修正案
 REVIEW_EOF
+    fi
+
     {
       echo ""
       echo "## git status"
@@ -454,7 +462,7 @@ REVIEW_EOF
       done
     } >> "\${review_file}"
 
-    cat "\${review_file}" | claude -p 2>&1 | tee -a "\${log_file}"
+    cat "\${review_file}" | claude -p --allowedTools "Read" 2>&1 | tee -a "\${log_file}"
     rm -f "\${review_file}"
     echo "=== レビュー完了 ===" | tee -a "\${log_file}"
   else
