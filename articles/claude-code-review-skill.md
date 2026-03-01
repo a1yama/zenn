@@ -67,7 +67,9 @@ Claude Codeのセッション中に`/code-review`と入力するだけです。
 
 ### ヘッドレスモードで使う（claude-tmux連携）
 
-[claude-tmux](https://zenn.dev/because02/articles/claude-tmux-parallel-agents)と組み合わせると、実装完了後に自動でレビューが走ります。
+claude-tmuxと組み合わせると、実装完了後に自動でレビューが走ります。
+
+https://zenn.dev/because02/articles/claude-tmux-parallel-agents
 
 claude-tmuxの`spawn`コマンドは、実装エージェント完了後にSKILL.MDを読み込み、2つ目の`claude -p`でレビューします。
 
