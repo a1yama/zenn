@@ -175,6 +175,7 @@ claude -p --allowedTools "Edit Write" "タスクの説明"
 
 ### 注意事項
 
+<!-- prettier-ignore -->
 :::message alert
 エージェントはファイルの作成・編集を確認なしで実行します。意図しないファイル変更のリスクがあるため、完了後は必ず`git diff`で変更内容を確認してください。
 :::
@@ -195,6 +196,7 @@ git checkout -- .           # 問題があれば全変更を破棄
 claude -p --allowedTools "Edit Write Bash(npm:*) Bash(go:*)" "タスクの説明"
 ```
 
+<!-- prettier-ignore -->
 :::message
 Bashを広く許可すると任意コマンド実行のリスクがあります。パターンで必ず絞ってください。
 :::
@@ -238,6 +240,7 @@ READMEの更新や調査タスクなど、レビューが不要な場合は`--no
 claude-tmux spawn "READMEを更新" --name docs --no-review
 ```
 
+<!-- prettier-ignore -->
 :::message alert
 実装エージェントはEdit/Writeが承認なしで許可されています。レビューエージェントは読み取り専用です。レビュー結果に問題が報告された場合、修正は手動で行うか、新たにspawnしてください。
 :::
