@@ -21,8 +21,8 @@ Claude Codeのスキルは、`~/.claude/skills/<スキル名>/SKILL.md`に配置
 ```yaml
 ---
 description: スキルの説明
-context: fork    # fork: 別コンテキストで実行、inherit: 現在のコンテキストを継承
-agent: Explore   # 使用するエージェントタイプ
+context: fork # fork: 別コンテキストで実行、inherit: 現在のコンテキストを継承
+agent: Explore # 使用するエージェントタイプ
 ---
 ```
 
@@ -54,8 +54,7 @@ agent: Explore
 
 以下のコマンドで変更差分を取得し、レビューしてください。
 
-git diff
-git diff --cached
+git diff git diff --cached
 
 未追跡の新規ファイルがある場合は、ファイル内容を直接読んでレビューしてください。
 
@@ -78,9 +77,7 @@ git status --short
 
 各指摘は以下の形式で簡潔に:
 
-[重要度: high/medium/low] ファイルパス:行番号
-内容: 問題の説明
-提案: 修正案
+[重要度: high/medium/low] ファイルパス:行番号内容: 問題の説明提案: 修正案
 ```
 
 ポイントは3つです。
@@ -101,19 +98,23 @@ git status --short
 ## よくあるミス
 
 ### 定数定義
+
 - **iotaを使ったconstの途中に新しい定数を追加**
   - 説明: iotaで定義された定数の途中に追加すると、以降の値が全てずれる
   - 対策: 新しい定数は末尾に追加するか、明示的に値を指定する
 
 ### エラーハンドリング
-- **エラーの無視（_ = err）**
+
+- **エラーの無視（\_ = err）**
 - **エラーのラップ不足（%wを使わない）**
 
 ### 並行処理
+
 - **goroutineリーク（contextキャンセルの欠如）**
 - **deferのループ内使用**
 
 ## 参考資料
+
 - [Effective Go](https://go.dev/doc/effective_go)
 - [Go Code Review Comments](https://github.com/golang/go/wiki/CodeReviewComments)
 ```
@@ -126,18 +127,22 @@ git status --short
 ## よくあるミス
 
 ### 型安全性
+
 - **anyの多用（unknownや具体的な型を使うべき）**
 - **型アサーション（as）の乱用（型ガードを使うべき）**
 
 ### 非同期処理
+
 - **PromiseのUnhandled Rejection**
 - **並列実行可能な処理をawaitで直列実行**
 
 ### React固有
+
 - **useEffectの依存配列の不備**
 - **key propの欠如**
 
 ## 参考資料
+
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/intro.html)
 - [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html)
 ```
@@ -172,9 +177,7 @@ claude-tmux spawn "タスク"
 
 実装エージェントにはEdit/Writeを許可し、レビューエージェントにはReadのみ許可しています。レビュー結果はログに出力されるだけで、ファイルを変更しません。
 
-:::message alert
-実装エージェントはEdit/Writeが承認なしで許可されています。意図しないファイル変更のリスクがあるため、完了後は`git diff`で変更内容を確認してください。
-:::
+:::message alert実装エージェントはEdit/Writeが承認なしで許可されています。意図しないファイル変更のリスクがあるため、完了後は`git diff`で変更内容を確認してください。:::
 
 ## チェックリストの育て方
 
@@ -185,9 +188,7 @@ claude-tmux spawn "タスク"
 レビューで見逃したミスや新たに気づいた落とし穴は、`/update-review-checklist`スキルでチェックリストに追加できます。SKILL.MDの末尾にもこの導線を記載しています。
 
 ```markdown
-**レビュー後のフィードバック:**
-このレビューで見逃したミスや新たに気づいた落とし穴があれば、
-/update-review-checklist スキルでチェックリストに追加してください。
+**レビュー後のフィードバック:** このレビューで見逃したミスや新たに気づいた落とし穴があれば、/update-review-checklist スキルでチェックリストに追加してください。
 ```
 
 ### 追加の例
@@ -221,6 +222,8 @@ claude
 ```
 
 ### dotfilesで管理する場合
+
+実際のファイルは[dotfilesリポジトリ](https://github.com/a1yama/dotfiles/tree/master/packages/claude/.claude/skills/code-review)で公開しています。
 
 GNU Stowでdotfilesを管理している場合は、以下のパスに配置します。
 

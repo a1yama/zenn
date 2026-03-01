@@ -69,7 +69,7 @@ chmod +x ~/.local/bin/claude-tmux
 export PATH="$HOME/.local/bin:$PATH"
 ```
 
-dotfilesで管理する場合は、GNU Stowでシンボリックリンクを展開するのがおすすめです。
+dotfilesで管理する場合は、GNU Stowでシンボリックリンクを展開するのがおすすめです。実際のファイルは[dotfilesリポジトリ](https://github.com/a1yama/dotfiles/tree/master/packages/claude/.local/bin)で公開しています。
 
 ```text
 dotfiles/packages/claude/.local/bin/claude-tmux
