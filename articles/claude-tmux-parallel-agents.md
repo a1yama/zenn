@@ -199,7 +199,7 @@ claude -p --allowedTools "Edit Write Bash(npm:*) Bash(go:*)" "タスクの説明
 
 ## 自動コードレビュー
 
-claude-tmuxは実装完了後にClaude Codeの`/code-review`スキル（`~/.claude/skills/code-review/SKILL.md`）を使って自動でコードレビューします。実装エージェントとは別の`claude -p`プロセスがレビューを担当するため、独立した視点でチェックが走ります。
+claude-tmuxは実装完了後に[/code-reviewスキル](https://zenn.dev/because02/articles/claude-code-review-skill)（`~/.claude/skills/code-review/SKILL.md`）を使って自動でコードレビューします。実装エージェントとは別の`claude -p`プロセスがレビューを担当するため、独立した視点でチェックが走ります。
 
 ### フロー
 
