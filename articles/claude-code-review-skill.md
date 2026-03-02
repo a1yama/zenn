@@ -65,29 +65,6 @@ Claude Codeのセッション中に`/code-review`と入力するだけです。
 
 `context: fork`により別プロセスで起動し、`git diff`の内容をレビューして結果を返します。実装中のコンテキストには影響しません。
 
-### ヘッドレスモードで使う（claude-tmux連携）
-
-claude-tmuxと組み合わせると、実装完了後に自動でレビューが走ります。
-
-https://zenn.dev/because02/articles/claude-tmux-parallel-agents
-
-claude-tmuxの`spawn`コマンドは、実装エージェント完了後にSKILL.mdを読み込み、2つ目の`claude -p`でレビューします。
-
-```text
-claude-tmux spawn "タスク"
-  │
-  ├── claude -p --allowedTools "Edit Write"  ← 実装
-  ├── git diff → レビュープロンプト生成
-  └── claude -p --allowedTools "Read"        ← レビュー（SKILL.md使用）
-```
-
-実装エージェントにはEdit/Writeを許可し、レビューエージェントにはReadのみ許可しています。レビュー結果はログに出力されるだけで、ファイルを変更しません。
-
-<!-- prettier-ignore -->
-:::message alert
-実装エージェントはEdit/Writeが承認なしで許可されています。意図しないファイル変更のリスクがあるため、完了後は`git diff`で変更内容を確認してください。
-:::
-
 ## チェックリストの育て方
 
 `/code-review`スキルの価値は、チェックリストを継続的に改善することで高まります。
@@ -121,5 +98,4 @@ GNU Stowで管理している場合は`stow -d ~/dotfiles/packages -t ~ -R claud
 - `/code-review`はClaude Codeのスキル機能を使った自動コードレビューの仕組み
 - `context: fork`と`agent: Explore`で実装コンテキストから独立した読み取り専用レビューを実現
 - `languages/`に言語固有チェックリストを配置すると、レビュー観点が拡張される
-- claude-tmux連携で実装→レビューの完全自動化が可能
 - チェックリストを育てることでレビュー精度が継続的に向上する
