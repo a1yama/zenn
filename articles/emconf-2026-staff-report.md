@@ -1,5 +1,5 @@
 ---
-title: 'EMConf2026楽しかった'
+title: 'EMConf2026めっちゃよかった'
 emoji: '🎪'
 type: 'idea'
 topics:
