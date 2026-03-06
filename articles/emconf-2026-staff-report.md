@@ -1,5 +1,5 @@
 ---
-title: 'EMConf2026に遊撃スタッフとして参加してきた'
+title: 'EMConf2026楽しかった'
 emoji: '🎪'
 type: 'idea'
 topics:
