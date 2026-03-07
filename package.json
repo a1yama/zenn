@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/a1yama/zenn#readme",
   "dependencies": {
-    "zenn-cli": "^0.1.158"
+    "zenn-cli": "^0.4.6"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.6.1",
