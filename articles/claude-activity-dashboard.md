@@ -13,7 +13,9 @@ published: true
 
 Claude Codeを日常的に使っていると、「自分がどれくらいClaude Codeを使っているのか」「どのツールが多く使われているのか」「どのプロジェクトで活発に使っているのか」が気になってきます。
 
-Claude Codeは `~/.claude/projects/` 配下にJSONL形式で活動ログを保存しています。このログを解析して可視化するダッシュボードと、ログを分析してClaude Codeの使い方自体を改善するスキルを作りました。
+Claude Codeは `~/.claude/projects/` 配下にJSONL形式で活動ログを保存しています。ログの可視化ダッシュボード自体はJSONLをパースしてグラフにするだけなので、作ること自体はそれほど難しくありません。似たツールもすでにいくつか存在します。
+
+このプロジェクトでは可視化に加えて、ログを分析してClaude Codeの使い方自体を改善する `/analyze-usage` スキルを組み込みました。分析結果からCLAUDE.mdのルール追加や新規スキルの作成まで、ワンストップで完結するのがポイントです。
 
 https://github.com/a1yama/claude-activity-dashboard
 
