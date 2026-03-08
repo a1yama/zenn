@@ -8,7 +8,7 @@ topics:
   - 'fzf'
   - 'ShellScript'
   - 'CLI'
-published: false
+published: true
 ---
 
 ## リモートブランチ、溜まっていませんか？
