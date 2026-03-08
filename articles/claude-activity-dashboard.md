@@ -30,7 +30,8 @@ https://github.com/a1yama/claude-activity-dashboard
 - **プロジェクト別サマリー**: プロジェクトごとの利用状況
 - **最近のセッション一覧**: 直近のセッションへのリンク
 
-![最近のセッション一覧](/images/claude-activity-dashboard-sessions.png) _最近のセッション一覧。プロジェクト名・所要時間・メッセージ数・ツール使用回数が一目でわかる_
+![ダッシュボード概要画面](/images/claude-activity-dashboard-overview.png)
+*統計カード・日別アクティビティ・時間帯別分布・ツール使用ランキングが一画面で確認できる*
 
 ### セッション詳細画面
 
