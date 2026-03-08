@@ -8,7 +8,7 @@ topics:
   - 'Python'
   - 'TypeScript'
   - 'Datasette'
-published: false
+published: true
 ---
 
 Claude Codeを日常的に使っていると、「自分がどれくらいClaude Codeを使っているのか」「どのツールが多く使われているのか」「どのプロジェクトで活発に使っているのか」が気になってきます。
