@@ -353,6 +353,61 @@ packages/claude/
 
 CLAUDE.mdもstowで管理しているのがお気に入りポイントです。どのマシンでも同じルールセットでClaude Codeを使えます。
 
+### settings.json — 権限・フック・通知
+
+`settings.json` では権限の許可リスト、フック、ステータスラインなどを設定しています。
+
+#### 権限（permissions）
+
+よく使うコマンドはあらかじめ `allow` に入れています。git、gh、go、docker、npmあたりはほぼ全サブコマンドを許可。毎回「許可しますか？」と聞かれるのがストレスだったので、信頼できるコマンドは全部通す方針にしました。
+
+```json
+"permissions": {
+  "allow": [
+    "Bash(git checkout *)", "Bash(git add *)", "Bash(git push *)",
+    "Bash(gh pr create *)", "Bash(gh issue list *)",
+    "Bash(go test *)", "Bash(go build *)",
+    "Bash(docker *)", "Bash(npm *)",
+    ...
+  ]
+}
+```
+
+MCPツール（Notion API、Codex）の許可もここで管理しています。
+
+#### フック（hooks） — 通知
+
+一番こだわっているのは通知まわりです。`hooks` で `Stop`（タスク完了）と `Notification`（権限要求など）のイベントを拾って、自作の `claude-notify` を実行しています。
+
+```json
+"hooks": {
+  "Notification": [{ "hooks": [{ "type": "command", "command": "claude-notify" }] }],
+  "Stop":         [{ "hooks": [{ "type": "command", "command": "claude-notify" }] }]
+}
+```
+
+`claude-notify` は標準入力からフックイベントのJSONを受け取って、3つの経路で通知します。
+
+1. **ベル通知** — ターミナルに `\a` を送る。tmux側で `monitor-bell on` + `bell-action any` を設定しているので、別ウィンドウのエージェントが完了するとステータスバーにベルアイコン（󱅫）が出る
+2. **Slack Webhook** — ブロック形式で、絵文字+タイトル+直近のメッセージ+作業ディレクトリを送信
+3. **Discord Webhook** — Embed形式で色分け（完了=緑、権限要求=黄）
+
+![tmuxのベル通知](/images/dev-environment-2026-spring/tmux-bell.png) _5:zennウィンドウにベルアイコンが表示されている_
+
+Webhook URLは環境変数（`CLAUDE_SLACK_WEBHOOK_URL`、`CLAUDE_DISCORD_WEBHOOK_URL`）で渡しています。claude-tmuxで複数エージェントを並列に走らせていると完了や質問待ちを見逃しがちなので、この通知がないと回らないです。
+
+フックには他にも `PreToolUse`（ツール実行前）や `PostToolUse`（ツール実行後）があって、特定のツール呼び出しをインターセプトできます。まだ設定していないですが、危険なコマンドのブロックやコミット前の自動チェックに使えそうなので、そのうち試してみたいと思っています。
+
+#### ステータスライン（statusLine）
+
+`statusLine` にはカスタムのシェルスクリプトを指定しています。Claude Codeの画面下部に常に表示される情報で、3行構成にしました。
+
+1. **Git情報** — ディレクトリ、ブランチ名、ステージング/変更/未追跡ファイルの数、リベースやマージ中の状態
+2. **PR情報** — `gh` コマンドで現在のブランチのPRを取得して、レビュー状態（APPROVED / CHANGES REQUESTED / REVIEW REQUIRED）とCI結果（PASS / FAIL / RUNNING）を表示
+3. **トークン・コスト** — モデル名、入出力トークン数、累計コスト（USD）
+
+PRのレビュー状態がリアルタイムで見えるのは地味に助かっています。
+
 ### claude-tmux — 並列エージェント
 
 claude-tmuxは、tmux上でClaude Codeエージェントを並列実行するための自作CLIです。
@@ -432,6 +487,16 @@ Obsidianのときは「あとで整理しよう」が溜まっていく一方で
 | デザイン           | Figma                              |
 | ユーティリティ     | 1Password, Alfred, CleanShot       |
 | ノート             | Notion                             |
+
+## 音声入力 — VoiceOS
+
+最近はコードやテキストを音声入力で書くことが増えました。使っているのは [VoiceOS](https://voiceos.com/) です。
+
+マイクは2つ使い分けています。デスクでは [FIFINE K688CT](https://www.amazon.co.jp/dp/B0DNJGTMBK)、外出時は [SHURE MVL](https://www.amazon.co.jp/dp/B08G7B5P13)（ピンマイク）。
+
+入力のトリガーには自作キーボードを使っています。VoiceOSの音声入力ショートカットとエンターキーを割り当てて、左手だけで音声入力の開始・確定ができるようにしました。レイヤーをいくつか作って、左手キーボードとしても使っています。
+
+https://x.com/xxx_a1_xxx/status/2032815271636025559
 
 ## おわりに
 
