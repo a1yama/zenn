@@ -8,7 +8,7 @@ topics:
   - 'Neovim'
   - 'ClaudeCode'
   - 'CLI'
-published: false
+published: true
 ---
 
 開発環境を晒す記事が流れてくる季節なので自分も乗っかってみる。dotfilesを3年くらい育て続けていて、そろそろ一度棚卸ししたかったのでちょうどいいと思った。
