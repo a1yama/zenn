@@ -323,8 +323,6 @@ zenn/
 
 `.gitconfig` にfzfを組み込んだエイリアスを大量に定義しています。変更ファイルの選択、ブランチの切り替え・削除・マージなど、選択系の操作はすべてfzf経由。
 
-![fzf Gitエイリアスのスクリーンショット](/images/dev-environment-2026-spring/git-fzf.png) _fzfで変更ファイルを選択してgit addする例_
-
 ### git-delete-remote-branch
 
 リモートブランチの削除もfzfで選択できる自作スクリプトを使っています。PRがマージされたあとのリモートブランチ掃除が楽になります。
@@ -369,8 +367,6 @@ claude-tmux issues 42 43 44
 # 実行中のエージェント一覧
 claude-tmux status
 ```
-
-![claude-tmuxのスクリーンショット](/images/dev-environment-2026-spring/claude-tmux.png) _claude-tmuxで複数のエージェントが並列で作業している様子_
 
 tmuxのペイン分割を使って、独立したタスクを複数のエージェントに同時に任せられます。エージェントが質問を持った場合は監督エージェントが自動で判断して回答する仕組みも入れています。
 
