@@ -59,16 +59,16 @@ done
 
 ### WezTerm
 
-ターミナルエミュレータは [WezTerm](https://wezfurlong.org/wezterm/) です。Luaで設定を書けるのが気に入っています。設定ファイル自体がプログラムなので、条件分岐やループも使える。
+ターミナルエミュレータは [WezTerm](https://wezfurlong.org/wezterm/) です。Luaで設定を書けるのが気に入っています。設定ファイル自体がプログラムなので、条件分岐やループも使えます。
 
 ![WezTermのスクリーンショット](/images/dev-environment-2026-spring/wezterm.png) _WezTermの外観_
 
-設定のポイント：
+設定のポイントはこのあたりです。
 
-- **フォント**: HackGen Console NF（14pt）— Nerd Fonts対応で各種アイコンが出る
-- **透過**: 85%。`macos_window_background_blur` でぼかし効果も入れている。これだけで見た目の満足度がだいぶ上がる
-- **タブバー**: 下部配置、1タブのときは非表示。Nerd Fontsのアイコンでタブの装飾もしている
-- **キーバインド**: デフォルトを全部無効化して、`keybinds.lua` で独自に定義
+- フォントはHackGen Console NF（14pt）。Nerd Fonts対応で各種アイコンが出る
+- 透過は85%で、`macos_window_background_blur` でぼかし効果も入れている。これだけで見た目の満足度がだいぶ上がる
+- タブバーは下部配置、1タブのときは非表示。Nerd Fontsのアイコンでタブの装飾もしている
+- キーバインドはデフォルトを全部無効化して、`keybinds.lua` で独自に定義
 
 WezTermのpane機能は使わず、ペイン管理はtmuxに任せています。以前はWezTermのpaneで満足していたんですが、「WezTermをやめたら操作感ごと失われる」のが嫌でtmuxに移行しました。
 
@@ -388,9 +388,9 @@ MCPツール（Notion API、Codex）の許可もここで管理しています�
 
 `claude-notify` は標準入力からフックイベントのJSONを受け取って、3つの経路で通知します。
 
-1. **ベル通知** — ターミナルに `\a` を送る。tmux側で `monitor-bell on` + `bell-action any` を設定しているので、別ウィンドウのエージェントが完了するとステータスバーにベルアイコン（󱅫）が出る
-2. **Slack Webhook** — ブロック形式で、絵文字+タイトル+直近のメッセージ+作業ディレクトリを送信
-3. **Discord Webhook** — Embed形式で色分け（完了=緑、権限要求=黄）
+1. ベル通知はターミナルに `\a` を送る。tmux側で `monitor-bell on` + `bell-action any` を設定しているので、別ウィンドウのエージェントが完了するとステータスバーにベルアイコン（󱅫）が出る
+2. Slack Webhookはブロック形式で、絵文字+タイトル+直近のメッセージ+作業ディレクトリを送信
+3. Discord WebhookはEmbed形式で色分け（完了=緑、権限要求=黄）
 
 ![tmuxのベル通知](/images/dev-environment-2026-spring/tmux-bell.png) _5:zennウィンドウにベルアイコンが表示されている_
 
@@ -402,9 +402,9 @@ Webhook URLは環境変数（`CLAUDE_SLACK_WEBHOOK_URL`、`CLAUDE_DISCORD_WEBHOO
 
 `statusLine` にはカスタムのシェルスクリプトを指定しています。Claude Codeの画面下部に常に表示される情報で、3行構成にしました。
 
-1. **Git情報** — ディレクトリ、ブランチ名、ステージング/変更/未追跡ファイルの数、リベースやマージ中の状態
-2. **PR情報** — `gh` コマンドで現在のブランチのPRを取得して、レビュー状態（APPROVED / CHANGES REQUESTED / REVIEW REQUIRED）とCI結果（PASS / FAIL / RUNNING）を表示
-3. **トークン・コスト** — モデル名、入出力トークン数、累計コスト（USD）
+1. Git情報はディレクトリ、ブランチ名、ステージング/変更/未追跡ファイルの数、リベースやマージ中の状態
+2. PR情報は `gh` コマンドで現在のブランチのPRを取得して、レビュー状態（APPROVED / CHANGES REQUESTED / REVIEW REQUIRED）とCI結果（PASS / FAIL / RUNNING）を表示
+3. トークン・コストはモデル名、入出力トークン数、累計コスト（USD）
 
 PRのレビュー状態がリアルタイムで見えるのは地味に助かっています。
 

@@ -10,9 +10,9 @@ topics:
 published: true
 ---
 
-## TL;DR
+## 作ったもの
 
-GoのOpenTelemetry計装で最も多いバグ――`RecordError`と`SetStatus`の呼び忘れ――を構造的に排除するライブラリ **[othelp](https://github.com/a1yama/othelp)** を作りました。
+GoのOpenTelemetry計装で一番多いバグ（`RecordError`と`SetStatus`の呼び忘れ）を構造的に排除するライブラリ [othelp](https://github.com/a1yama/othelp) を作りました。
 
 ```go
 // Before: 毎回エラー処理を書く必要がある
@@ -31,20 +31,24 @@ defer end(&err)
 
 ## OpenTelemetryとは
 
-OpenTelemetry（OTel）は、アプリケーションの**トレース・メトリクス・ログ**を収集するためのオープンソースの標準規格です。CNCFのプロジェクトとして開発されており、Datadog、Grafana、New Relicなど主要なObservabilityツールが対応しています。
+OpenTelemetry（OTel）は、アプリケーションのトレース・メトリクス・ログを収集するためのオープンソースの標準規格です。
 
-分散システムにおいて「このリクエストはどのサービスを通って、どこで何ms かかったか」を可視化するために、各関数やサービスに**計装（instrumentation）**と呼ばれるコードを仕込みます。
+CNCFのプロジェクトとして開発されていて、Datadog、Grafana、New Relicなど主要なObservabilityツールが対応しています。
+
+分散システムで「このリクエストはどのサービスを通って、どこで何msかかったか」を可視化するために、各関数やサービスに計装（instrumentation）と呼ばれるコードを仕込みます。
 
 ## GoでOTelはどこで使うのか
 
 GoはマイクロサービスやバックエンドのAPIサーバーで多く採用されています。OTelの計装が特に効果を発揮するのは以下のようなケースです。
 
-- **HTTPハンドラ** — リクエスト単位でトレースを開始し、処理の流れを追跡する
-- **DBアクセス** — クエリの実行時間やエラーを記録し、ボトルネックを特定する
-- **外部API呼び出し** — 他サービスへのHTTP/gRPCリクエストのレイテンシとエラー率を可視化する
-- **バッチ処理** — ジョブの各ステップの進捗と所要時間を記録する
+- HTTPハンドラでリクエスト単位にトレースを開始し、処理の流れを追跡する
+- DBアクセスのクエリ実行時間やエラーを記録し、ボトルネックを特定する
+- 外部API呼び出しのレイテンシとエラー率を可視化する
+- バッチ処理で各ステップの進捗と所要時間を記録する
 
-つまり、**Goで書かれるほぼすべてのバックエンドコードにおいて、OTelの計装は必要になる**と言っても過言ではありません。だからこそ、計装コードのBoilerplateが多いのは深刻な問題です。
+Goで書かれるバックエンドコードなら、だいたいどこかでOTelの計装が必要になります。
+
+だからこそ、計装コードのボイラープレートが多いのは深刻な問題だと思っています。
 
 ## GoのOTel計装、何が辛いのか
 
@@ -76,9 +80,11 @@ func GetUser(ctx context.Context, id string) (*User, error) {
 
 ### 2. RecordError / SetStatus の呼び忘れが頻発する
 
-これが最も深刻な問題です。`defer span.End()` は書くのに、エラー時の `RecordError` と `SetStatus` を忘れる。結果、トレースは出るのにエラー情報が欠落している――という状態になります。
+これが最も深刻な問題です。
 
-レビューで毎回指摘するのも非現実的です。人間が忘れる問題は、コードの構造で解決すべきです。
+`defer span.End()`は書くのに、エラー時の`RecordError`と`SetStatus`を忘れる。結果として、トレースは出るのにエラー情報が欠落している状態になります。
+
+レビューで毎回指摘するのも非現実的です。人間が忘れる問題は、コードの構造で解決したいところです。
 
 ### 3. Java/Pythonとの格差
 
@@ -107,9 +113,9 @@ func GetUser(ctx context.Context, id string) (user *User, err error) {
 }
 ```
 
-`end` はerrのポインタを受け取り、deferで関数終了時に評価します。errがnilでなければ `RecordError` + `SetStatus(Error)`、nilなら `SetStatus(Ok)` を自動で行います。
+`end`はerrのポインタを受け取り、deferで関数終了時に評価します。errがnilでなければ`RecordError`と`SetStatus(Error)`、nilなら`SetStatus(Ok)`を自動で実行します。
 
-**忘れようがない**のがポイントです。
+書き忘れようがない、というところがポイントです。
 
 ### 原則2: OTel公式APIを隠蔽しすぎない
 
@@ -177,7 +183,7 @@ func CreateOrder(ctx context.Context, req OrderRequest) (order *Order, err error
 
 ### 属性ヘルパー
 
-`attribute.String(...)` の代わりに短縮形が使えます。
+`attribute.String(...)`の代わりに短縮形が使えます。
 
 ```go
 othelp.Str("key", "value")      // attribute.String
@@ -244,11 +250,11 @@ func ProcessPayment(ctx context.Context, payment Payment) (result *Result, err e
 }
 ```
 
-エラーリターンが2箇所ある場合、素のOTelでは `RecordError` + `SetStatus` を**4行 × 2箇所 = 8行**書く必要があります。othelpでは **`defer end(&err)` の1行**で済みます。
+エラーリターンが2箇所ある場合、素のOTelでは`RecordError`と`SetStatus`を4行 × 2箇所で8行書く必要があります。othelpでは`defer end(&err)`の1行で済みます。
 
 ## 仕組み
 
-`end` 関数の内部実装はシンプルです。
+`end`関数の内部実装はシンプルです。
 
 ```go
 func newEndFunc(span trace.Span) EndFunc {
@@ -264,9 +270,11 @@ func newEndFunc(span trace.Span) EndFunc {
 }
 ```
 
-Goの `defer` は関数終了時に実行され、名前付き戻り値のポインタを通じて最終的なerrorの値を参照できます。この言語仕様を活用しているだけなので、マジックは一切ありません。
+Goの`defer`は関数終了時に実行され、名前付き戻り値のポインタから最終的なerrorの値を参照できます。
 
-## まとめ
+この言語仕様を使っているだけなので、マジックは一切ありません。
+
+## 最後に
 
 | 観点 | 素のOTel | othelp |
 |---|---|---|
