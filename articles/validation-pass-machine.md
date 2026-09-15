@@ -3,9 +3,9 @@ title: '競馬AIの検証コード46,000行と、合格を疑うコード0行'
 emoji: '🧪'
 type: 'tech'
 topics:
+  - '競馬'
   - '機械学習'
   - 'MLOps'
-  - 'Python'
   - '個人開発'
   - 'データ分析'
 published: true
