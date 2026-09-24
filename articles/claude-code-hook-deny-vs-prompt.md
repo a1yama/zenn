@@ -8,7 +8,7 @@ topics:
   - 'Bash'
   - '設計'
   - '個人開発'
-published: false
+published: true
 ---
 
 Claude Codeに「ファイル検索は専用ツールを使ってください。Bashは最後の手段です」と指示を書いていました。
